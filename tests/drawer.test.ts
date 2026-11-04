@@ -1136,6 +1136,19 @@ test('my 👀 on the PR, added by another machine of mine within the hour, start
   await ui.unmount()
 })
 
+test('while an auto review runs, a line under the band names its PR and how long it has run', AUTO_ON, async ($, on) => {
+  agents(on)
+  const g: Github = { locks: [{ status: 200, at: Date.now() - 10 * 60_000 }], unlocked: [] }
+  const ui = await opened($, on, [], [], 'review', { items: [recent(5)], files: { [AUTO]: queued() }, run: autoGithub(g) })
+  await tick()
+  await ui.unmount()
+
+  const band = await $.ui.mount({ plugin: 'review-inbox', component: 'AbovePrompt', surface: 'terminal', props: { hasSurvey: false, isWorking: false, maxRows: 10 } })
+  expect(await shown(band, /^o\/r$/)).toBe(true)
+  expect(await shown(band, /^ #5 · Auto review running · 10 min so far/)).toBe(true)
+  await band.unmount()
+})
+
 test('a 👀 older than the hour, left by a machine that stopped mid-review, is taken over and the review runs here', AUTO_ON, async ($, on) => {
   const got = agents(on, () => ['a1'])
   const g: Github = { locks: [{ status: 200, at: Date.now() - 2 * 60 * 60_000 }, { status: 201, at: Date.now() }], unlocked: [] }

@@ -17,6 +17,7 @@ export const zhTW: Messages = {
     searches: n => `已儲存的搜尋 ${n}`,
     oldest: days => ` · 最久已等待 ${days} 天`,
     autoDone: (n: number) => ` · 已自動審查 ${n}`,
+    autoWaiting: (n: number) => ` · 等待中 ${n}`,
   },
   tabs: {
     review: n => `待審查 ${n}`,

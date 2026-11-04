@@ -17,6 +17,7 @@ export const ko: Messages = {
     searches: n => `저장한 검색 ${n}`,
     oldest: days => ` · 가장 오래된 리뷰 ${days}일째`,
     autoDone: (n: number) => ` · 자동 리뷰 완료 ${n}`,
+    autoWaiting: (n: number) => ` · 대기 ${n}`,
   },
   tabs: {
     review: n => `리뷰 대기 ${n}`,

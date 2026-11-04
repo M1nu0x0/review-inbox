@@ -7,6 +7,7 @@ import type {
   AutoJob,
   AutoResult,
   AutoReviewFile,
+  AutoState,
   ButtonScope,
   Capped,
   Confirming,
@@ -38,6 +39,7 @@ import {
   MAX_ATTEMPTS,
   RUN_STALE_MS,
   autoStates,
+  bandFocus,
   switchedOn,
   mayStart,
   reviewerAway,
@@ -217,6 +219,9 @@ const directs = atom({ plugin: 'review-inbox', key: 'directs' } as const, {} as 
 const autoReview = atom({ plugin: 'review-inbox', key: 'autoReview' } as const, { jobs: {} } as AutoReviewFile)
 const autoAsking = atom({ plugin: 'review-inbox', key: 'autoAsking' } as const, null as number | null)
 const autoSettings = atom({ plugin: 'review-inbox', key: 'autoSettings' } as const, false)
+const spin = atom({ plugin: 'review-inbox', key: 'spin' } as const, 0)
+const SPIN = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
+let spinTimer: ReturnType<EngineInterface['clock']['every']> | undefined
 // The autoReview setting itself: where auto review starts until the switch atop the Review tab is first pressed.
 let autoOption = false
 // The settings as set, for the setup request to show their values now.
@@ -1433,6 +1438,31 @@ async function fillAdded($: EngineInterface): Promise<boolean> {
   return true
 }
 
+// A card's auto review line, and the band's; a done review with a result draws its own.
+function autoText(s: AutoState, now: number, isAway: boolean): string {
+  return s.kind === 'manual'
+    ? s.why === 'before'
+      ? m.auto.before
+      : m.auto.tooBig
+    : s.kind === 'settling'
+      ? m.auto.settling(Math.max(1, Math.ceil((s.startsAt - now) / 60_000)))
+      : s.kind === 'capped'
+        ? m.auto.capped
+        : s.kind === 'running'
+          ? m.auto.running(Math.max(0, Math.floor((now - s.since) / 60_000)))
+          : s.kind === 'done'
+            ? s.reviewId
+              ? m.auto.pending
+              : m.auto.reviewed
+            : s.kind === 'failed'
+              ? m.auto.failed(s.error)
+              : s.kind === 'stale'
+                ? m.auto.stale(s.from.slice(0, 7))
+                : isAway
+                  ? m.auto.waitingSession
+                  : m.auto.queued(s.ahead)
+}
+
 // Whether each kind of card is out of view: hidden until its news, or snoozed until its day or its news.
 function awayTests(hiddenMap: Record<string, string>, notesMap: Record<string, Note>, now: number) {
   const away = (key: string, test: (hideMap: Record<string, string>) => boolean) => test(hiddenMap) || isSnoozed(notesMap[key], key, now, test)
@@ -1702,8 +1732,19 @@ export const register: Register = (on, options) => {
     if (e.viewport) terminalColumns = e.viewport.columns
     const below = await next(e)
     if (e.props.hasSurvey) return below
-    const away = awayTests(await read($, hidden), await read($, notes), Date.now())
-    const reviews = (await read($, items)).filter(i => !i.isDraft && !away.review(i))
+    const now = Date.now()
+    const everything = await read($, items)
+    const autoNow = await read($, autoReview)
+    const focus = bandFocus(autoStates(autoNow, everything, config.auto, now))
+    // The spinner's timer runs only while a review does, and never with motion off.
+    const isSpinning = focus?.state.kind === 'running' && !isStill
+    if (isSpinning && !spinTimer) spinTimer = $.clock.every(100, () => void update($, spin, n => n + 1))
+    if (!isSpinning && spinTimer) {
+      spinTimer.cancel()
+      spinTimer = undefined
+    }
+    const away = awayTests(await read($, hidden), await read($, notes), now)
+    const reviews = everything.filter(i => !i.isDraft && !away.review(i))
     const band = await bandNow($)
     const counts = bandLabels(band, m, await read($, capped))
     if (counts.length === 0) return below
@@ -1711,10 +1752,12 @@ export const register: Register = (on, options) => {
     const keys = BAND_KEYS.filter(k => band[k] > 0)
     const flashing = await read($, dropped)
     // Auto reviews posted by themselves and not checked yet.
-    const finished = (await read($, autoReview)).posted?.length ?? 0
+    const finished = autoNow.posted?.length ?? 0
+    const focused = focus && everything.find(i => itemKey(i) === focus.key)
+    const isAway = reviewerAway(autoNow, await read($, sessions))
+    const frame = SPIN[(await read($, spin)) % SPIN.length]
 
     const { Box, Text, Button } = $.ui.resolve(e)
-    const now = Date.now()
     const oldest = reviews.length > 0 ? Math.max(...reviews.map(i => waitingDays(i.requestedAt, now))) : undefined
 
     return (
@@ -1735,6 +1778,23 @@ export const register: Register = (on, options) => {
           </Box>
           <Button key="open" label={m.band.open} variant="primary" onPress={() => void openDrawer($)} />
         </Box>
+        {focus && focused && (
+          <Box flexDirection="row">
+            <Text color={focus.state.kind === 'running' ? 'suggestion' : 'subtle'}>{`  ${focus.state.kind === 'running' ? frame : '◷'} `}</Text>
+            {/* The repository gives way first on a narrow terminal; the number and the time stay. */}
+            <Box flexShrink={1} minWidth={0}>
+              <Text bold wrap="truncate-end">
+                {focused.repo}
+              </Text>
+            </Box>
+            <Box flexShrink={0}>
+              <Text color={focus.state.kind === 'running' ? 'suggestion' : 'subtle'}>
+                {` #${focused.number} · ${autoText(focus.state, now, isAway)}`}
+                {focus.waiting > 0 && <Text dimColor>{m.band.autoWaiting(focus.waiting)}</Text>}
+              </Text>
+            </Box>
+          </Box>
+        )}
         {below}
       </Box>
     )
@@ -2023,28 +2083,7 @@ export const register: Register = (on, options) => {
           </Box>
         )
       }
-      const text =
-        s.kind === 'manual'
-          ? s.why === 'before'
-            ? m.auto.before
-            : m.auto.tooBig
-          : s.kind === 'settling'
-            ? m.auto.settling(Math.max(1, Math.ceil((s.startsAt - now) / 60_000)))
-            : s.kind === 'capped'
-              ? m.auto.capped
-              : s.kind === 'running'
-                ? m.auto.running(Math.max(0, Math.floor((now - s.since) / 60_000)))
-                : s.kind === 'done'
-                  ? s.reviewId
-                    ? m.auto.pending
-                    : m.auto.reviewed
-                  : s.kind === 'failed'
-                    ? m.auto.failed(s.error)
-                    : s.kind === 'stale'
-                      ? m.auto.stale(s.from.slice(0, 7))
-                      : isAway
-                        ? m.auto.waitingSession
-                        : m.auto.queued(s.ahead)
+      const text = autoText(s, now, isAway)
       return (
         <Box flexDirection="row" justifyContent="space-between" gap={1} marginTop={1}>
           <Box flexShrink={1} minWidth={0}>

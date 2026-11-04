@@ -127,6 +127,17 @@ export function nextJob(states: Record<string, AutoState>): string | undefined {
   return Object.entries(states).find(([, s]) => s.kind === 'queued' && s.ahead === 0)?.[0]
 }
 
+// The one review the band follows: the running one, else the next to start; `waiting` counts the others queued or settling.
+export function bandFocus(states: Record<string, AutoState>): { key: string; state: AutoState; waiting: number } | undefined {
+  const order: AutoState['kind'][] = ['running', 'queued', 'settling']
+  const within = (s: AutoState) => (s.kind === 'queued' ? s.ahead : s.kind === 'settling' ? s.startsAt : 0)
+  const live = Object.entries(states)
+    .filter(([, s]) => order.includes(s.kind))
+    .sort(([, a], [, b]) => order.indexOf(a.kind) - order.indexOf(b.kind) || within(a) - within(b))
+  const [first] = live
+  return first && { key: first[0], state: first[1], waiting: live.length - 1 }
+}
+
 // A reply that does not parse, or a run that failed to start, is tried once more; one out of turns is not, as the same budget runs out again.
 export const MAX_ATTEMPTS = 2
 // A run whose session has not renewed it for this long has lost that session: its job goes back to the queue.

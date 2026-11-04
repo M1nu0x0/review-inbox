@@ -20,6 +20,7 @@ export const de: Messages = {
     searches: n => `Gespeicherte Suchen ${n}`,
     oldest: days => ` · längste Wartezeit ${count(days, 'Tag', 'Tage')}`,
     autoDone: (n: number) => ` · automatisch geprüft ${n}`,
+    autoWaiting: (n: number) => ` · ${n} weitere warten`,
   },
   tabs: {
     review: n => `Zu reviewen ${n}`,

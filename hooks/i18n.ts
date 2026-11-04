@@ -29,6 +29,7 @@ const en = {
     searches: (n: string) => `Saved searches ${n}`,
     oldest: (days: number) => ` · oldest waiting ${count(days, 'day')}`,
     autoDone: (n: number) => ` · auto-reviewed ${n}`,
+    autoWaiting: (n: number) => ` · ${n} more waiting`,
   },
   tabs: {
     review: (n: string) => `To review ${n}`,

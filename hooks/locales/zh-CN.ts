@@ -17,6 +17,7 @@ export const zhCN: Messages = {
     searches: n => `已保存的搜索 ${n}`,
     oldest: days => ` · 最久已等待 ${days} 天`,
     autoDone: (n: number) => ` · 已自动审查 ${n}`,
+    autoWaiting: (n: number) => ` · 等待中 ${n}`,
   },
   tabs: {
     review: n => `待审查 ${n}`,
