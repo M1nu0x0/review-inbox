@@ -19,6 +19,7 @@ export const es: Messages = {
     searches: (n: string) => `Búsquedas guardadas ${n}`,
     oldest: (days: number) => ` · solicitud más antigua: ${count(days, 'día')} de espera`,
     autoDone: (n: number) => ` · revisadas automáticamente ${n}`,
+    autoWaiting: (n: number) => ` · ${n} en espera`,
   },
   tabs: {
     review: (n: string) => `Por revisar ${n}`,

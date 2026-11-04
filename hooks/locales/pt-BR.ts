@@ -20,6 +20,7 @@ export const ptBR: Messages = {
     searches: (n: string) => `Buscas salvas ${n}`,
     oldest: (days: number) => ` · solicitação mais antiga: ${count(days, 'dia')} de espera`,
     autoDone: (n: number) => ` · revisadas automaticamente ${n}`,
+    autoWaiting: (n: number) => ` · ${n} na fila`,
   },
   tabs: {
     review: (n: string) => `Para revisar ${n}`,

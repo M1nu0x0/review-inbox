@@ -17,6 +17,7 @@ export const ja: Messages = {
     searches: (n: string) => `保存した検索 ${n}`,
     oldest: (days: number) => ` · 最長${days}日待ち`,
     autoDone: (n: number) => ` · 自動レビュー済み ${n}`,
+    autoWaiting: (n: number) => ` · 待ち ${n}`,
   },
   tabs: {
     review: (n: string) => `要レビュー ${n}`,

@@ -310,6 +310,8 @@ declare module 'claude-code' {
       autoAsking: number | null
       // Whether the settings under the switch are open.
       autoSettings: boolean
+      // The spinner's frame on the band's auto review line; moves only while a review runs.
+      spin: number
     }
   }
 }

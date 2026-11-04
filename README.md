@@ -20,7 +20,7 @@ With [GitHub CLI](https://cli.github.com/) logged in (`gh auth login`), at the p
 
 The last line opens the drawer. Options and updates are under [Install](#install).
 
-- **Band above the prompt** — one line counting only what needs you: PRs waiting for your review, your PRs with something to do, and issues assigned to you or mentioning you. Its colour is how long the oldest review request has waited (yellow from 3 days, red from 14). `Open` opens the drawer. A count that goes down shows in green for a moment. With auto review on, `auto-reviewed N` follows the counts while reviews it posted for you wait in the drawer.
+- **Band above the prompt** — one line counting only what needs you: PRs waiting for your review, your PRs with something to do, and issues assigned to you or mentioning you. Its colour is how long the oldest review request has waited (yellow from 3 days, red from 14). `Open` opens the drawer. A count that goes down shows in green for a moment. With auto review on, `auto-reviewed N` follows the counts while reviews it posted for you wait in the drawer. While an auto review is waiting or running, a second line names its PR and where it stands, in the same words as its card, with how many more are waiting; a spinner turns while the review runs.
 - **Drawer** — `/review-inbox`, with five tabs: To review, My PRs and Assigned & mentioned hold what to act on, then Saved searches and Notifications are there to browse. Press 1 to 5 while the drawer has focus to switch to that tab, counting from the left. The number on a tab counts its cards; Saved searches has none, and Notifications counts the unread.
 - **Toasts** — a short notice when something new arrives while you work.
 
@@ -64,7 +64,7 @@ Set on the install screen; change them later in `/config`. A change applies righ
 | `language` | `auto` | `auto`, or one of the codes in [Language](#language). |
 | `refreshMinutes` | `10` | Minutes between fetches from GitHub: 5, 10, 15, 30 or 60. All sessions share one fetch. |
 | `repoPaths` | empty | Where Claude works on each repository, for the next-step buttons. See below. |
-| `motion` | `auto` | `off` stops the band's count flash. `auto` stops it too when Claude Code's reduced motion setting (`prefersReducedMotion`) is on. |
+| `motion` | `auto` | `off` stops the band's count flash. `auto` stops it too when Claude Code's reduced motion setting (`prefersReducedMotion`) is on. It also stops the spinner on the auto review line. |
 | `directActions` | `off` | `on` adds buttons that write to GitHub from a card. See Direct GitHub actions below. |
 | `autoReview` | `off` | `on` reviews PRs that ask for you in the background and keeps each review as your pending review until you post it. **It uses noticeably more tokens.** This is only where it starts: once you press the `Auto review` button atop the To review tab, which asks first before it turns on, the button alone turns it on and off. See Auto review below. |
 | `autoReviewPost` | `pending` | What a finished review becomes: `pending` keeps it as your pending review to post from the card, `comment` posts it as a comment, `verdict` posts it with the verdict it suggests, approve and request changes included. Anything but `pending` posts under your name without asking. |

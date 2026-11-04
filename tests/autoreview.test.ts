@@ -9,6 +9,7 @@ import {
   siblingRepos,
   SETTLE_MS,
   autoStates,
+  bandFocus,
   carried,
   contentKey,
   createArgs,
@@ -438,4 +439,12 @@ test('a subagent name keeps to letters, digits, _ and - within 64 characters, cu
   expect(long.endsWith('-142-2f2195a')).toBe(true)
   expect(agentName('auto-review', 'my.org/some.repo#7', 'abcdef0123')).toBe('auto-review-my-org-some-repo-7-abcdef0')
   expect(agentName('auto-review', 'o/r#5', 'h5h5h5h5')).toBe('auto-review-o-r-5-h5h5h5h')
+})
+
+test('the band follows the running review, else the next to start, and counts the others still waiting', () => {
+  const waiting = { 'o/r#2': { kind: 'queued', ahead: 0 }, 'o/r#3': { kind: 'settling', startsAt: 50 }, 'o/r#4': { kind: 'failed', error: 'x' } } as const
+  expect(bandFocus({ ...waiting, 'o/r#1': { kind: 'running', since: 7 } })).toEqual({ key: 'o/r#1', state: { kind: 'running', since: 7 }, waiting: 2 })
+  expect(bandFocus(waiting)).toEqual({ key: 'o/r#2', state: { kind: 'queued', ahead: 0 }, waiting: 1 })
+  expect(bandFocus({ 'o/r#3': { kind: 'settling', startsAt: 50 }, 'o/r#5': { kind: 'settling', startsAt: 20 } })).toEqual({ key: 'o/r#5', state: { kind: 'settling', startsAt: 20 }, waiting: 1 })
+  expect(bandFocus({ 'o/r#4': { kind: 'failed', error: 'x' }, 'o/r#6': { kind: 'capped' }, 'o/r#7': { kind: 'manual', why: 'before' } })).toBeUndefined()
 })

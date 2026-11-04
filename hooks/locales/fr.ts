@@ -20,6 +20,7 @@ export const fr: Messages = {
     searches: n => `Recherches enregistrées ${n}`,
     oldest: days => ` · demande la plus ancienne : ${count(days, 'jour')} d'attente`,
     autoDone: (n: number) => ` · revues automatiques ${n}`,
+    autoWaiting: (n: number) => ` · ${n} en attente`,
   },
   tabs: {
     review: n => `Revues à faire ${n}`,
