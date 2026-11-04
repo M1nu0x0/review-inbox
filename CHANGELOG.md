@@ -2,6 +2,12 @@
 
 All notable changes to this mod. Versions follow `version` in `.claude-plugin/plugin.json`; installed copies update when it changes.
 
+## 0.28.0 — 2026-11-04
+
+### Added
+
+- While an auto review waits or runs, a second line under the band shows its PR and where it stands, in the same words as its card, and how many more are waiting. Before, only posted reviews showed on the band, and you had to open the drawer to see whether one was running. A spinner turns at the start of the line while the review runs, and stops when `motion` is `off` or Claude Code's reduced motion setting is on. On a narrow terminal the repository name is cut first.
+
 ## 0.27.2 — 2026-10-30
 
 ### Fixed
