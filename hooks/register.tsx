@@ -1776,7 +1776,6 @@ export const register: Register = (on, options) => {
               ))}
             </Text>
             {finished > 0 && <Text color="suggestion">{m.band.autoDone(finished)}</Text>}
-            {oldest !== undefined && <Text dimColor>{m.band.oldest(oldest)}</Text>}
           </Box>
           <Button key="open" label={m.band.open} variant="primary" onPress={() => void openDrawer($)} />
         </Box>
@@ -2313,7 +2312,7 @@ export const register: Register = (on, options) => {
 
     const direct = myIssues.filter(i => i.kind !== 'reference')
     const band = bandCounts(shownReviews.filter(i => !i.isDraft).length, shownPrs, shownIssues, bandSearchCount(groups, results))
-    const isZero = state.kind === 'ready' && state.updatedAt !== undefined && BAND_KEYS.every(k => band[k] === 0)
+    const isZero = state.kind === 'ready' && state.updatedAt !== undefined && Object.values(band).every(n => n === 0)
     const tabCards: { repo: string }[] = active === 'review' ? shownReviews : active === 'mine' ? shownPrs : shownIssues
     const tabs: { id: Tab; label: string }[] = [
       { id: 'review', label: m.tabs.review(atLeast(ready.length, cappedTabs.review)) },
