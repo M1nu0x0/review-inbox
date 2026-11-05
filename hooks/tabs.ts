@@ -297,8 +297,8 @@ export function issueAlerts(seen: string[] | undefined, issues: IssueItem[]): Is
 
 // The band counts only what needs action.
 export type BandCounts = { reviews: number; prTodo: number; issues: number; searches: number }
-// The band's order.
-export const BAND_KEYS = ['reviews', 'prTodo', 'issues', 'searches'] as const
+// The band's order. Issues are counted but not shown: the band has no room for them.
+export const BAND_KEYS = ['reviews', 'prTodo', 'searches'] as const
 
 // Each tab reads one page of search results; past it, a count is only a lower bound.
 export const atLeast = (n: number, capped = false) => (capped ? `${n}+` : `${n}`)
@@ -315,7 +315,7 @@ export function bandCounts(reviews: number, prs: MyPr[], issues: IssueItem[], se
 
 // Zeros are left out.
 export function bandLabels(counts: BandCounts, m: Messages, capped: Capped = {}): string[] {
-  const tabOf = { reviews: 'review', prTodo: 'mine', issues: 'issues', searches: 'searches' } as const
+  const tabOf = { reviews: 'review', prTodo: 'mine', searches: 'searches' } as const
   return BAND_KEYS.filter(k => counts[k] > 0).map(k => m.band[k](atLeast(counts[k], capped[tabOf[k]])))
 }
 
