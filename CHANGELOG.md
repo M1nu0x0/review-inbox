@@ -2,6 +2,12 @@
 
 All notable changes to this mod. Versions follow `version` in `.claude-plugin/plugin.json`; installed copies update when it changes.
 
+## 0.28.2 — 2026-11-05
+
+### Changed
+
+- The band leaves out issues assigned to you or mentioning you, and the `oldest waiting N days` text, so the line fits. Those issues stay in the drawer's tab, and the band's colour still shows how long the oldest review request has waited.
+
 ## 0.28.1 — 2026-11-05
 
 ### Changed
