@@ -2510,7 +2510,6 @@ export const register: Register = (on, options) => {
           <Box marginTop={1}>
             <Input
               key="search"
-              label={m.search.label}
               placeholder={m.search.placeholder}
               value={rawQuery}
               submitLabel={m.search.label}
@@ -2553,6 +2552,19 @@ export const register: Register = (on, options) => {
                 ))}
               </Box>
             )}
+            {Select ? (
+              // One line however narrow the drawer; the lists to act on come first.
+              <Box marginY={1}>
+                <Select
+                  key="tab"
+                  label={m.tabs.view}
+                  options={tabs.map(t => ({ value: t.id, label: t.label }))}
+                  value={active}
+                  onSelect={value => void update($, tab, () => value as Tab)}
+                />
+              </Box>
+            ) : (
+            // A surface that draws no menu keeps the tab buttons, pressed with 1 to 5.
             <Box flexDirection="row" flexWrap="wrap" columnGap={1} marginY={1}>
               {tabs.map((t, i) => [
                 // The lists to act on, then the ones to browse.
@@ -2570,6 +2582,7 @@ export const register: Register = (on, options) => {
                 />,
               ])}
             </Box>
+            )}
 
             {active === 'review' && (
               <Box flexDirection="column">

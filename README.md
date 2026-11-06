@@ -21,7 +21,7 @@ With [GitHub CLI](https://cli.github.com/) logged in (`gh auth login`), at the p
 The last line opens the drawer. Options and updates are under [Install](#install).
 
 - **Band above the prompt** — one line counting only what needs you: PRs waiting for your review and your PRs with something to do. Issues assigned to you or mentioning you are left to the drawer, to keep the line short. Its colour is how long the oldest review request has waited (yellow from 3 days, red from 14). `Open` opens the drawer. A count that goes down shows in green for a moment. With auto review on, `auto-reviewed N` follows the counts while reviews it posted for you wait in the drawer. While an auto review is waiting or running, a second line names its PR and where it stands, in the same words as its card, with how many more are waiting; a spinner turns while the review runs.
-- **Drawer** — `/review-inbox`, with five tabs: To review, My PRs and Assigned & mentioned hold what to act on, then Saved searches and Notifications are there to browse. Press 1 to 5 while the drawer has focus to switch to that tab, counting from the left. The number on a tab counts its cards; Saved searches has none, and Notifications counts the unread.
+- **Drawer** — `/review-inbox`, with five tabs: To review, My PRs and Assigned & mentioned hold what to act on, then Saved searches and Notifications are there to browse. Pick a tab from the View menu at the top. The number on a tab counts its cards; Saved searches has none, and Notifications counts the unread.
 - **Toasts** — a short notice when something new arrives while you work.
 
 The interface and the summaries come in nine languages; see [Language](#language).

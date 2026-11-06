@@ -18,6 +18,7 @@ export const ja: Messages = {
     autoWaiting: (n: number) => ` · 待ち ${n}`,
   },
   tabs: {
+    view: '表示',
     review: (n: string) => `要レビュー ${n}`,
     mine: (n: string) => `自分の PR ${n}`,
     issues: (n: string) => `割り当て・メンション ${n}`,
