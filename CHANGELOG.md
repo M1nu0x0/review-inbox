@@ -2,6 +2,15 @@
 
 All notable changes to this mod. Versions follow `version` in `.claude-plugin/plugin.json`; installed copies update when it changes.
 
+## 0.30.0 — 2026-11-06
+
+### Changed
+
+- The drawer has three tabs instead of five, as buttons on one line in the desktop app and the terminal alike: To review; My work, with your PRs and then the issues assigned to you or mentioning you; and Browse, with your saved searches and then your notifications. Each list inside a tab sits under its name and count. The View menu and the terminal's two rows of buttons are gone.
+- The tabs take no number keys, since other plugins' buttons already use them.
+- `N hidden · show all` sits at the top of each list and brings back only that list's cards.
+- An empty line now separates the auto review switch, and its settings when open, from the groups below.
+
 ## 0.29.1 — 2026-11-06
 
 ### Fixed
