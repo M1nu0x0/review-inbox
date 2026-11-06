@@ -2596,7 +2596,7 @@ export const register: Register = (on, options) => {
             {active === 'review' && (
               <Box flexDirection="column">
                 {askingAuto !== null ? (
-                  <Box flexDirection="column">
+                  <Box flexDirection="column" marginBottom={1}>
                     <Text color="warning">{m.auto.ask}</Text>
                     <Text dimColor>{m.auto.askSettings}</Text>
                     <Text dimColor>{m.auto.askHere}</Text>
@@ -2606,7 +2606,7 @@ export const register: Register = (on, options) => {
                     </Box>
                   </Box>
                 ) : (
-                  <Box flexDirection="row" gap={1}>
+                  <Box flexDirection="row" gap={1} marginBottom={1}>
                     <Button
                       key="auto-switch"
                       label={config.auto.isOn ? m.auto.switchOn : m.auto.switchOff}
@@ -2617,7 +2617,7 @@ export const register: Register = (on, options) => {
                   </Box>
                 )}
                 {settingsOpen && (
-                  <Box flexDirection="column" marginLeft={2}>
+                  <Box flexDirection="column" marginLeft={2} marginBottom={1}>
                     {Select && Input &&
                       AUTO_SETTINGS.map(s => {
                         const value = optionValues[s.key]?.trim() || s.fallback
