@@ -2,6 +2,13 @@
 
 All notable changes to this mod. Versions follow `version` in `.claude-plugin/plugin.json`; installed copies update when it changes.
 
+## 0.29.0 — 2026-11-06
+
+### Changed
+
+- The drawer's tabs are one View menu, such as `View: To review 0 ▾`, that takes a single line however narrow the drawer is. Each tab keeps its count in the menu, the lists to act on first. Before, a narrow drawer wrapped the tab buttons onto three lines. Number keys 1 to 5 no longer switch tabs, since a menu takes no hotkey; a surface that draws no menu keeps the buttons and their keys.
+- The search field drops its label, which repeated the Search button beside it.
+
 ## 0.28.2 — 2026-11-05
 
 ### Changed
