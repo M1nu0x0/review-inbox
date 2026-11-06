@@ -24,6 +24,10 @@ export const ja: Messages = {
     issues: (n: string) => `割り当て・メンション ${n}`,
     searches: '保存した検索',
     activity: (n: string) => `通知 ${n}`,
+    short: {
+      review: (n: string) => `レビュー ${n}`,
+      activity: (n: string) => `通知 ${n}`,
+    },
   },
   card: {
     rerequest: '再リクエスト',

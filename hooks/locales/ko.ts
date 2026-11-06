@@ -24,6 +24,10 @@ export const ko: Messages = {
     issues: n => `할당·언급 ${n}`,
     searches: '저장한 검색',
     activity: n => `GitHub 알림 ${n}`,
+    short: {
+      review: n => `리뷰 ${n}`,
+      activity: n => `알림 ${n}`,
+    },
   },
   card: {
     rerequest: '재요청',

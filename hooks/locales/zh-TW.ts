@@ -24,6 +24,10 @@ export const zhTW: Messages = {
     issues: n => `指派與提及 ${n}`,
     searches: '已儲存的搜尋',
     activity: n => `GitHub 通知 ${n}`,
+    short: {
+      review: n => `審查 ${n}`,
+      activity: n => `通知 ${n}`,
+    },
   },
   card: {
     rerequest: '已重新請求',

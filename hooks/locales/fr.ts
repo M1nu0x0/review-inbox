@@ -27,6 +27,10 @@ export const fr: Messages = {
     issues: n => `Assignations et mentions ${n}`,
     searches: 'Recherches enregistrées',
     activity: n => `Notifications ${n}`,
+    short: {
+      review: n => `Revues ${n}`,
+      activity: n => `Notifications ${n}`,
+    },
   },
   card: {
     rerequest: 'revue redemandée',

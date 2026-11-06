@@ -36,6 +36,11 @@ const en = {
     issues: (n: string) => `Assigned & mentioned ${n}`,
     searches: 'Saved searches',
     activity: (n: string) => `Notifications ${n}`,
+    // On the terminal's tab buttons, which share a line.
+    short: {
+      review: (n: string) => `Review ${n}`,
+      activity: (n: string) => `Notifications ${n}`,
+    },
   },
   card: {
     rerequest: 're-requested',
