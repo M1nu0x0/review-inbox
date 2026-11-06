@@ -2314,12 +2314,17 @@ export const register: Register = (on, options) => {
     const band = bandCounts(shownReviews.filter(i => !i.isDraft).length, shownPrs, shownIssues, bandSearchCount(groups, results))
     const isZero = state.kind === 'ready' && state.updatedAt !== undefined && Object.values(band).every(n => n === 0)
     const tabCards: { repo: string }[] = active === 'review' ? shownReviews : active === 'mine' ? shownPrs : shownIssues
-    const tabs: { id: Tab; label: string }[] = [
-      { id: 'review', label: m.tabs.review(atLeast(ready.length, cappedTabs.review)) },
-      { id: 'mine', label: m.tabs.mine(atLeast(myPrs.length, cappedTabs.mine)) },
-      { id: 'issues', label: m.tabs.issues(atLeast(direct.length, cappedTabs.issues)) },
-      { id: 'searches', label: m.tabs.searches },
-      { id: 'activity', label: m.tabs.activity(`${openThreads.filter(t => t.unread).length}`) },
+    const reviewCount = atLeast(ready.length, cappedTabs.review)
+    const mineLabel = m.tabs.mine(atLeast(myPrs.length, cappedTabs.mine))
+    const issuesLabel = m.tabs.issues(atLeast(direct.length, cappedTabs.issues))
+    const unreadCount = `${openThreads.filter(t => t.unread).length}`
+    // `short` is the name on a tab button, which shares a line with the others.
+    const tabs: { id: Tab; label: string; short: string }[] = [
+      { id: 'review', label: m.tabs.review(reviewCount), short: m.tabs.short.review(reviewCount) },
+      { id: 'mine', label: mineLabel, short: mineLabel },
+      { id: 'issues', label: issuesLabel, short: issuesLabel },
+      { id: 'searches', label: m.tabs.searches, short: m.tabs.searches },
+      { id: 'activity', label: m.tabs.activity(unreadCount), short: m.tabs.short.activity(unreadCount) },
     ]
     const empty = (text: string) =>
       state.kind === 'loading' && everything.length + allPrs.length + allIssues.length === 0 ? (
@@ -2552,7 +2557,7 @@ export const register: Register = (on, options) => {
                 ))}
               </Box>
             )}
-            {Select ? (
+            {Select && e.surface !== 'terminal' ? (
               // One line however narrow the drawer; the lists to act on come first.
               <Box marginY={1}>
                 <Select
@@ -2564,24 +2569,28 @@ export const register: Register = (on, options) => {
                 />
               </Box>
             ) : (
-            // A surface that draws no menu keeps the tab buttons, pressed with 1 to 5.
-            <Box flexDirection="row" flexWrap="wrap" columnGap={1} marginY={1}>
-              {tabs.map((t, i) => [
-                // The lists to act on, then the ones to browse.
-                i === 3 && (
-                  <Text key="tab-divider" dimColor>
-                    │
-                  </Text>
-                ),
-                <Button
-                  key={`tab-${t.id}`}
-                  label={t.label}
-                  hotkey={`${i + 1}`}
-                  {...(t.id === active ? { variant: 'primary' as const } : { dimColor: true })}
-                  onPress={() => void update($, tab, () => t.id)}
-                />,
-              ])}
-            </Box>
+              // The terminal's menu takes no click, so there the tabs stay buttons pressed with 1 to 5:
+              // the lists to act on, then the ones to browse on a line of their own.
+              <Box flexDirection="column" marginY={1}>
+                {[
+                  { key: 'tabs-act', ids: ['review', 'mine', 'issues'] },
+                  { key: 'tabs-browse', ids: ['searches', 'activity'] },
+                ].map(row => (
+                  <Box key={row.key} flexDirection="row" flexWrap="wrap" columnGap={1}>
+                    {tabs.map((t, i) =>
+                      row.ids.includes(t.id) ? (
+                        <Button
+                          key={`tab-${t.id}`}
+                          label={t.short}
+                          hotkey={`${i + 1}`}
+                          {...(t.id === active ? { variant: 'primary' as const } : { dimColor: true })}
+                          onPress={() => void update($, tab, () => t.id)}
+                        />
+                      ) : null,
+                    )}
+                  </Box>
+                ))}
+              </Box>
             )}
 
             {active === 'review' && (

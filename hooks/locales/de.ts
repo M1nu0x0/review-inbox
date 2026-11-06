@@ -27,6 +27,10 @@ export const de: Messages = {
     issues: n => `Zugewiesen & erwähnt ${n}`,
     searches: 'Gespeicherte Suchen',
     activity: n => `Benachrichtigungen ${n}`,
+    short: {
+      review: n => `Reviews ${n}`,
+      activity: n => `Benachrichtigungen ${n}`,
+    },
   },
   card: {
     rerequest: 'erneut angefragt',

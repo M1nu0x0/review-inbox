@@ -24,6 +24,10 @@ export const zhCN: Messages = {
     issues: n => `分配与提及 ${n}`,
     searches: '已保存的搜索',
     activity: n => `GitHub 通知 ${n}`,
+    short: {
+      review: n => `审查 ${n}`,
+      activity: n => `通知 ${n}`,
+    },
   },
   card: {
     rerequest: '已重新请求',

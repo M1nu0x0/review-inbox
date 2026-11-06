@@ -26,6 +26,10 @@ export const es: Messages = {
     issues: (n: string) => `Asignadas y mencionadas ${n}`,
     searches: 'Búsquedas guardadas',
     activity: (n: string) => `Notificaciones ${n}`,
+    short: {
+      review: (n: string) => `Revisar ${n}`,
+      activity: (n: string) => `Notificaciones ${n}`,
+    },
   },
   card: {
     rerequest: 'revisión solicitada de nuevo',

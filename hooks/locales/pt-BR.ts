@@ -27,6 +27,10 @@ export const ptBR: Messages = {
     issues: (n: string) => `Atribuições e menções ${n}`,
     searches: 'Buscas salvas',
     activity: (n: string) => `Notificações ${n}`,
+    short: {
+      review: (n: string) => `Revisar ${n}`,
+      activity: (n: string) => `Notificações ${n}`,
+    },
   },
   card: {
     rerequest: 'revisão solicitada novamente',
