@@ -21,7 +21,7 @@ Con [GitHub CLI](https://cli.github.com/) con la sesión iniciada (`gh auth logi
 La última línea abre la bandeja. Las opciones y las actualizaciones están en [Instalación](#instalación).
 
 - **Franja sobre el prompt** — una línea que cuenta solo lo que requiere tu atención: PR que esperan tu revisión y tus PR por atender. Las incidencias asignadas a ti o que te mencionan quedan solo en la bandeja, para que la línea sea corta. Su color indica cuánto lleva esperando la solicitud de revisión más antigua (amarillo a partir de 3 días, rojo a partir de 14). `Abrir` abre la bandeja. Cuando un número baja, se pone verde un instante. Con la revisión automática activada, `revisadas automáticamente N` sigue a los números mientras las revisiones que publicó por ti esperan en la bandeja. Mientras una revisión automática espera o se ejecuta, una segunda línea nombra su PR y en qué punto está, con las mismas palabras que su tarjeta, y cuántas más esperan; un indicador gira mientras se ejecuta.
-- **Bandeja** — `/review-inbox`, con cinco pestañas: Por revisar, Mis PR y Asignadas y mencionadas son lo que hay que atender; Búsquedas guardadas y Notificaciones sirven para explorar. En la app de escritorio, elige la pestaña en el menú Ver, arriba. En la terminal las pestañas son botones en dos líneas, con lo que hay que atender en la primera; pulsa del 1 al 5 mientras la bandeja tiene el foco para ir a esa pestaña, contando desde la izquierda. El número de una pestaña cuenta sus tarjetas; Búsquedas guardadas no lleva ninguno, y Notificaciones cuenta solo las no leídas.
+- **Bandeja** — `/review-inbox`, con tres pestañas: Por revisar; Mi trabajo, con tus PR y las incidencias asignadas a ti o que te mencionan; y Explorar, con tus búsquedas guardadas y tus notificaciones de GitHub. El número de Por revisar y de Mi trabajo cuenta sus tarjetas; el de Explorar, las notificaciones no leídas.
 - **Avisos** — una notificación breve cuando llega algo nuevo mientras trabajas.
 
 La interfaz y los resúmenes están disponibles en nueve idiomas; consulta [Idioma](#idioma).
@@ -101,7 +101,7 @@ my-org/legacy=~/old/legacy-app
 
 ## Pestañas
 
-Cada pestaña agrupa sus tarjetas por categoría. Pulsa el encabezado de una categoría para plegarla y otra vez para abrirla. `N ocultos · mostrar todo`, arriba de la pestaña, vuelve a mostrar solo las tarjetas ocultas de esa pestaña.
+Cada pestaña agrupa sus tarjetas por categoría. Pulsa el encabezado de una categoría para plegarla y otra vez para abrirla. `N ocultos · mostrar todo`, arriba de una lista, vuelve a mostrar solo las tarjetas ocultas de esa lista.
 
 `Nota`, en `▸ Acciones` de una tarjeta, escribe una línea encima del título: qué revisaste o qué acordaste hacer y cuándo. `Guardar` deja la tarjeta a la vista. `Posponer hasta mañana` y `Posponer hasta la próxima semana` la apartan hasta mañana o el próximo lunes a las 9, o antes si hay novedades: un commit nuevo en una solicitud de revisión, un cambio de estado o una revisión nueva en tu PR, actividad nueva en una incidencia. Un aviso te dice cuándo vuelve una tarjeta pospuesta, con su nota. `Borrar` quita la nota.
 
@@ -284,7 +284,7 @@ Una búsqueda GraphQL devuelve todos los PR que esperan tu revisión con lo que 
 
 - Como máximo 100 PR que esperan tu revisión, en el orden de mejor coincidencia de GitHub. Las demás pestañas leen hasta 100 de tus PR abiertos, 100 incidencias asignadas y 100 que te mencionan, y referencias de hasta 500 elementos con actividad reciente, en cada caso con la actividad más reciente primero. Cuando una lista tiene más, su recuento se muestra como `100+`. Cada lista se lee de 25 en 25 (las referencias, más ligeras, de 100 en 100) y aparece en cuanto llega, y una página en la que GitHub agota el tiempo se vuelve a pedir con la mitad del tamaño, así que una cuenta con muchos PR no supera el límite de tiempo de GitHub.
 - Una búsqueda guardada muestra sus 20 coincidencias actualizadas más recientemente; su cantidad es el total que GitHub da para la búsqueda.
-- La pestaña Notificaciones lee hasta 100 notificaciones de los últimos 30 días y no consulta más a menudo de lo que permite el intervalo de GitHub.
+- Las notificaciones de Explorar se leen hasta 100, de los últimos 30 días, y no se consulta más a menudo de lo que permite el intervalo de GitHub.
 - Se pasa por alto una referencia a un elemento que no has tocado en 60 días.
 - `Nueva revisión` desaparece con cualquier commit nuevo en el PR, incluido uno hecho con el botón "Update branch" de GitHub o por un bot.
 - Tras un force-push que reescribió el commit que revisaste, un PR con revisión solicitada de nuevo no muestra la línea "Desde mi última revisión".

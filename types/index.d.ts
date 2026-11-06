@@ -166,7 +166,8 @@ export type IssueItem = CardDetails & {
   body?: string
 }
 
-export type Tab = 'review' | 'mine' | 'issues' | 'searches' | 'activity'
+// My work holds my PRs and my issues; Browse holds the saved searches and the notifications.
+export type Tab = 'review' | 'work' | 'browse'
 
 // A button of my own from actions.json, or a built-in one of the same shape; its prompt is a template filled from the card.
 export type ButtonScope = 'review' | 'pr' | 'issue'
@@ -237,7 +238,7 @@ export type Presence = {
 export type RepoPaths = Record<string, { path: string; at: number }>
 
 // Shared by every session on the machine; whichever finds it stale fetches and rewrites it.
-export type Capped = Partial<Record<Tab, boolean>>
+export type Capped = Partial<Record<'review' | 'mine' | 'issues', boolean>>
 
 export type InboxFile = {
   items: InboxItem[]

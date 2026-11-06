@@ -21,16 +21,13 @@ export const fr: Messages = {
     autoWaiting: (n: number) => ` · ${n} en attente`,
   },
   tabs: {
-    view: 'Afficher',
     review: n => `Revues à faire ${n}`,
+    work: n => `Mon travail ${n}`,
+    browse: n => `Parcourir ${n}`,
     mine: n => `Mes PR ${n}`,
     issues: n => `Assignations et mentions ${n}`,
     searches: 'Recherches enregistrées',
     activity: n => `Notifications ${n}`,
-    short: {
-      review: n => `Revues ${n}`,
-      activity: n => `Notifications ${n}`,
-    },
   },
   card: {
     rerequest: 'revue redemandée',
