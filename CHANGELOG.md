@@ -2,6 +2,12 @@
 
 All notable changes to this mod. Versions follow `version` in `.claude-plugin/plugin.json`; installed copies update when it changes.
 
+## 0.29.1 — 2026-11-06
+
+### Fixed
+
+- In the terminal the drawer's tabs are buttons again, on two lines: To review, My PRs and Assigned & mentioned, then Saved searches and Notifications. The terminal's View menu opened on a click, but a click on an option picked nothing and left the list open. The buttons take clicks and the number keys 1 to 5. The desktop app keeps the View menu.
+
 ## 0.29.0 — 2026-11-06
 
 ### Changed
