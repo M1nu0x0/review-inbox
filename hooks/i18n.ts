@@ -30,6 +30,7 @@ const en = {
     autoWaiting: (n: number) => ` · ${n} more waiting`,
   },
   tabs: {
+    view: 'View',
     review: (n: string) => `To review ${n}`,
     mine: (n: string) => `My PRs ${n}`,
     issues: (n: string) => `Assigned & mentioned ${n}`,

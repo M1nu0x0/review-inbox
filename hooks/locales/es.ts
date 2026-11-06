@@ -20,6 +20,7 @@ export const es: Messages = {
     autoWaiting: (n: number) => ` · ${n} en espera`,
   },
   tabs: {
+    view: 'Ver',
     review: (n: string) => `Por revisar ${n}`,
     mine: (n: string) => `Mis PR ${n}`,
     issues: (n: string) => `Asignadas y mencionadas ${n}`,

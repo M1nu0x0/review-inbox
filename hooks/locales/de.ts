@@ -21,6 +21,7 @@ export const de: Messages = {
     autoWaiting: (n: number) => ` · ${n} weitere warten`,
   },
   tabs: {
+    view: 'Ansicht',
     review: n => `Zu reviewen ${n}`,
     mine: n => `Meine PRs ${n}`,
     issues: n => `Zugewiesen & erwähnt ${n}`,

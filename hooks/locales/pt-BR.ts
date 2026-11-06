@@ -21,6 +21,7 @@ export const ptBR: Messages = {
     autoWaiting: (n: number) => ` · ${n} na fila`,
   },
   tabs: {
+    view: 'Ver',
     review: (n: string) => `Para revisar ${n}`,
     mine: (n: string) => `Meus PRs ${n}`,
     issues: (n: string) => `Atribuições e menções ${n}`,

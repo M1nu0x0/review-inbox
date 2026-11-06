@@ -18,6 +18,7 @@ export const zhCN: Messages = {
     autoWaiting: (n: number) => ` · 等待中 ${n}`,
   },
   tabs: {
+    view: '查看',
     review: n => `待审查 ${n}`,
     mine: n => `我的 PR ${n}`,
     issues: n => `分配与提及 ${n}`,

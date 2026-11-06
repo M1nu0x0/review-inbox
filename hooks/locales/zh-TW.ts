@@ -18,6 +18,7 @@ export const zhTW: Messages = {
     autoWaiting: (n: number) => ` · 等待中 ${n}`,
   },
   tabs: {
+    view: '檢視',
     review: n => `待審查 ${n}`,
     mine: n => `我的 PR ${n}`,
     issues: n => `指派與提及 ${n}`,

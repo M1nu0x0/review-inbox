@@ -18,6 +18,7 @@ export const ko: Messages = {
     autoWaiting: (n: number) => ` · 대기 ${n}`,
   },
   tabs: {
+    view: '보기',
     review: n => `리뷰 대기 ${n}`,
     mine: n => `내 PR ${n}`,
     issues: n => `할당·언급 ${n}`,
