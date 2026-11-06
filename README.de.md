@@ -21,7 +21,7 @@ Mit angemeldeter [GitHub CLI](https://cli.github.com/) (`gh auth login`) im Prom
 Die letzte Zeile öffnet das Panel. Optionen und Updates stehen unter [Installation](#installation).
 
 - **Leiste über dem Prompt** – eine Zeile, die nur zählt, was Ihr Zutun erfordert: PRs, die auf Ihr Review warten, und Ihre PRs, bei denen etwas zu tun ist. Issues, die Ihnen zugewiesen sind oder Sie erwähnen, stehen nur im Panel, damit die Zeile kurz bleibt. Ihre Farbe zeigt, wie lange die älteste Review-Anfrage schon wartet (gelb ab 3 Tagen, rot ab 14). `Öffnen` öffnet das Panel. Sinkt eine Zahl, wird sie kurz grün. Bei eingeschaltetem automatischem Review folgt `automatisch geprüft N` auf die Zahlen, solange Reviews, die es für Sie veröffentlicht hat, im Panel warten. Solange ein automatisches Review wartet oder läuft, nennt eine zweite Zeile seinen PR und den Stand, in denselben Worten wie seine Karte, und wie viele noch warten; während das Review läuft, dreht sich ein Spinner.
-- **Panel „Review-Posteingang“** – `/review-inbox`, mit fünf Tabs: Zu reviewen, Meine PRs und Zugewiesen & erwähnt zeigen, was Sie erledigen müssen; Gespeicherte Suchen und Benachrichtigungen sind zum Stöbern da. In der Desktop-App wählen Sie den Tab oben im Menü „Ansicht“. Im Terminal sind die Tabs Schaltflächen in zwei Zeilen, das zu Erledigende in der ersten; drücken Sie 1 bis 5, solange das Panel den Fokus hat, um von links gezählt zu diesem Tab zu wechseln. Die Zahl am Tab zählt seine Karten; Gespeicherte Suchen hat keine, und Benachrichtigungen zählt die ungelesenen.
+- **Panel „Review-Posteingang“** – `/review-inbox`, mit drei Tabs: Zu reviewen; Meine Arbeit mit Ihren PRs und den Issues, die Ihnen zugewiesen sind oder Sie erwähnen; und Stöbern mit Ihren gespeicherten Suchen und Ihren GitHub-Benachrichtigungen. Die Zahl an Zu reviewen und Meine Arbeit zählt deren Karten, die an Stöbern die ungelesenen Benachrichtigungen.
 - **Benachrichtigungen** – ein kurzer Hinweis, wenn während der Arbeit etwas Neues eintrifft.
 
 Oberfläche und Zusammenfassungen gibt es in neun Sprachen; siehe [Sprache](#sprache).
@@ -101,7 +101,7 @@ my-org/legacy=~/old/legacy-app
 
 ## Tabs
 
-Jeder Tab fasst seine Karten nach Kategorien zusammen. Ein Druck auf die Überschrift einer Kategorie klappt sie zu, ein weiterer klappt sie auf. `N ausgeblendet · alle anzeigen` oben im Tab zeigt nur die ausgeblendeten Karten dieses Tabs wieder an.
+Jeder Tab fasst seine Karten nach Kategorien zusammen. Ein Druck auf die Überschrift einer Kategorie klappt sie zu, ein weiterer klappt sie auf. `N ausgeblendet · alle anzeigen` oben in einer Liste zeigt nur die ausgeblendeten Karten dieser Liste wieder an.
 
 `Notiz` unter `▸ Aktionen` einer Karte schreibt eine Zeile über ihren Titel: was Sie geprüft haben oder was Sie wann vorhaben. `Speichern` lässt die Karte sichtbar. `Bis morgen zurückstellen` und `Bis nächste Woche zurückstellen` blenden sie bis morgen oder nächsten Montag um 9 Uhr aus, oder früher, wenn es Neues gibt: einen neuen Commit in einer Review-Anfrage, einen neuen Zustand oder ein neues Review auf Ihrem PR, neue Aktivität in einem Issue. Eine Benachrichtigung meldet die zurückgekehrte Karte mit ihrer Notiz. `Löschen` entfernt die Notiz.
 
@@ -284,7 +284,7 @@ Eine einzige GraphQL-Suche liefert alle PRs, die auf Ihr Review warten, samt all
 
 - Höchstens 100 PRs, die auf Ihr Review warten, in GitHubs Reihenfolge nach bester Übereinstimmung. Die anderen Tabs lesen bis zu 100 Ihrer offenen PRs, 100 zugewiesene und 100 Sie erwähnende Issues sowie Verweise aus bis zu 500 kürzlich geänderten Einträgen, jeweils mit der neuesten Aktivität zuerst. Gibt es mehr, wird die Anzahl als `100+` angezeigt. Jede Liste wird in Schritten von 25 gelesen (Verweise, deren Einträge klein sind, in Schritten von 100) und erscheint, sobald sie da ist; eine Seite, bei der GitHub in ein Timeout läuft, wird mit halber Größe erneut angefragt, sodass auch ein Konto mit vielen PRs im Zeitlimit von GitHub bleibt.
 - Eine gespeicherte Suche zeigt ihre 20 zuletzt geänderten Treffer; ihre Anzahl ist GitHubs Gesamtzahl für die Suche.
-- Der Tab Benachrichtigungen liest bis zu 100 Benachrichtigungen der letzten 30 Tage und fragt nicht öfter, als GitHubs Abfrageintervall erlaubt.
+- Die Benachrichtigungen unter Stöbern umfassen bis zu 100 der letzten 30 Tage, und GitHub wird nicht öfter gefragt, als sein Abfrageintervall erlaubt.
 - Ein Verweis auf einen Eintrag, den Sie seit 60 Tagen nicht angefasst haben, wird nicht erfasst.
 - `Neues Review` verschwindet bei jedem neuen Commit auf dem PR, auch bei einem, den GitHubs Schaltfläche „Update branch“ oder ein Bot erstellt hat.
 - Nach einem Force-Push, der den von Ihnen reviewten Commit umgeschrieben hat, zeigt ein erneut angefragter PR keine Zeile „Seit meinem letzten Review“.

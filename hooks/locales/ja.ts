@@ -18,16 +18,13 @@ export const ja: Messages = {
     autoWaiting: (n: number) => ` · 待ち ${n}`,
   },
   tabs: {
-    view: '表示',
     review: (n: string) => `要レビュー ${n}`,
+    work: (n: string) => `自分の作業 ${n}`,
+    browse: (n: string) => `閲覧 ${n}`,
     mine: (n: string) => `自分の PR ${n}`,
     issues: (n: string) => `割り当て・メンション ${n}`,
     searches: '保存した検索',
     activity: (n: string) => `通知 ${n}`,
-    short: {
-      review: (n: string) => `レビュー ${n}`,
-      activity: (n: string) => `通知 ${n}`,
-    },
   },
   card: {
     rerequest: '再リクエスト',

@@ -21,7 +21,7 @@ Com o [GitHub CLI](https://cli.github.com/) logado (`gh auth login`), no prompt 
 A última linha abre a caixa de revisões. Opções e atualizações estão em [Instalação](#instalação).
 
 - **Barra acima do prompt** — uma linha que conta só o que depende de você: PRs aguardando sua revisão e seus PRs com algo a resolver. Issues atribuídas a você ou que mencionam você ficam só na caixa, para a linha continuar curta. A cor indica há quanto tempo a solicitação de revisão mais antiga está esperando (amarelo a partir de 3 dias, vermelho a partir de 14). `Abrir` abre a caixa de revisões. Quando um número cai, ele fica verde por um instante. Com a revisão automática ligada, `revisadas automaticamente N` segue os números enquanto as revisões que ela publicou por você esperam na caixa. Enquanto uma revisão automática espera ou roda, uma segunda linha mostra o PR e em que ponto está, com as mesmas palavras do cartão, e quantas outras esperam; um indicador gira enquanto ela roda.
-- **Caixa de revisões** — `/review-inbox`, com cinco abas. As três primeiras (Para revisar, Meus PRs e Atribuições e menções) reúnem o que você precisa resolver; Buscas salvas e Notificações servem para dar uma olhada. No app para desktop, escolha a aba no menu Ver, no topo. No terminal, as abas são botões em duas linhas, com o que você precisa resolver na primeira; com o foco na caixa, pressione 1 a 5 para ir até a aba nessa posição, contando da esquerda. O número de cada aba conta os cartões; Buscas salvas não tem número, e Notificações conta só as não lidas.
+- **Caixa de revisões** — `/review-inbox`, com três abas: Para revisar; Meu trabalho, com seus PRs e as issues atribuídas a você ou que mencionam você; e Explorar, com suas buscas salvas e suas notificações do GitHub. O número de Para revisar e de Meu trabalho conta os cartões; o de Explorar conta as notificações não lidas.
 - **Avisos** — um aviso curto quando algo novo chega enquanto você trabalha.
 
 A interface e os resumos estão disponíveis em nove idiomas; veja [Idioma](#idioma).
@@ -101,7 +101,7 @@ my-org/legacy=~/old/legacy-app
 
 ## Abas
 
-Cada aba agrupa seus cartões por categoria. Pressione o título de uma categoria para recolhê-la e de novo para abri-la. `N ocultos · mostrar todos`, no topo da aba, mostra de novo apenas os cartões ocultos daquela aba.
+Cada aba agrupa seus cartões por categoria. Pressione o título de uma categoria para recolhê-la e de novo para abri-la. `N ocultos · mostrar todos`, no topo de uma lista, mostra de novo apenas os cartões ocultos daquela lista.
 
 `Nota`, em `▸ Ações` de um cartão, escreve uma linha acima do título: o que você conferiu ou o que combinou fazer e quando. `Salvar` mantém o cartão à vista. `Adiar até amanhã` e `Adiar até a próxima semana` tiram o cartão de vista até amanhã ou a próxima segunda-feira, às 9 da manhã, ou antes, se houver novidade: um commit novo num pedido de revisão, uma mudança de estado ou uma revisão nova no seu PR, atividade nova numa issue. Um aviso mostra quando um cartão adiado volta, com a nota. `Apagar` remove a nota.
 
@@ -284,7 +284,7 @@ Uma busca GraphQL retorna todos os PRs aguardando sua revisão com o que os cart
 
 - No máximo 100 PRs aguardando sua revisão, na ordem de melhor correspondência do GitHub. As outras abas leem até 100 dos seus PRs abertos, 100 issues atribuídas e 100 que mencionam você, e referências de até 500 itens atualizados recentemente, cada lista com a atividade mais recente primeiro. Quando uma lista tem mais que isso, a contagem aparece como `100+`. Cada lista é lida de 25 em 25 (as referências, mais leves, de 100 em 100) e aparece assim que chega, e uma página em que o GitHub estoura o tempo é pedida de novo com metade do tamanho, então uma conta com muitos PRs fica dentro do limite de tempo do GitHub.
 - Uma busca salva mostra os 20 resultados atualizados mais recentemente; a contagem é o total que o GitHub dá para a busca.
-- A aba Notificações lê até 100 notificações dos últimos 30 dias e não consulta com mais frequência do que o intervalo do GitHub permite.
+- As notificações de Explorar são lidas até 100, dos últimos 30 dias, sem consultar com mais frequência do que o intervalo do GitHub permite.
 - Uma referência a um item em que você não mexe há 60 dias passa despercebida.
 - `Nova revisão` some com qualquer novo commit no PR, inclusive um feito pelo botão "Update branch" do GitHub ou por um bot.
 - Depois de um force-push que reescreveu o commit que você revisou, um PR com revisão solicitada novamente não mostra a linha "Desde a minha última revisão".

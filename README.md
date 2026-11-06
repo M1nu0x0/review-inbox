@@ -21,7 +21,7 @@ With [GitHub CLI](https://cli.github.com/) logged in (`gh auth login`), at the p
 The last line opens the drawer. Options and updates are under [Install](#install).
 
 - **Band above the prompt** — one line counting only what needs you: PRs waiting for your review and your PRs with something to do. Issues assigned to you or mentioning you are left to the drawer, to keep the line short. Its colour is how long the oldest review request has waited (yellow from 3 days, red from 14). `Open` opens the drawer. A count that goes down shows in green for a moment. With auto review on, `auto-reviewed N` follows the counts while reviews it posted for you wait in the drawer. While an auto review is waiting or running, a second line names its PR and where it stands, in the same words as its card, with how many more are waiting; a spinner turns while the review runs.
-- **Drawer** — `/review-inbox`, with five tabs: To review, My PRs and Assigned & mentioned hold what to act on, then Saved searches and Notifications are there to browse. In the desktop app, pick a tab from the View menu at the top. In the terminal the tabs are buttons on two lines, the lists to act on first; press 1 to 5 while the drawer has focus to switch to that tab, counting from the left. The number on a tab counts its cards; Saved searches has none, and Notifications counts the unread.
+- **Drawer** — `/review-inbox`, with three tabs: To review; My work, which holds your PRs and the issues assigned to you or mentioning you; and Browse, which holds your saved searches and your GitHub notifications. The number on To review and My work counts their cards, the one on Browse the unread notifications.
 - **Toasts** — a short notice when something new arrives while you work.
 
 The interface and the summaries come in nine languages; see [Language](#language).
@@ -101,7 +101,7 @@ my-org/legacy=~/old/legacy-app
 
 ## Tabs
 
-Each tab groups its cards into categories. Press a category's header to fold it, and again to open it. `N hidden · show all` at the top of a tab brings back that tab's hidden cards.
+Each tab groups its cards into categories. Press a category's header to fold it, and again to open it. `N hidden · show all` at the top of a list brings back that list's hidden cards.
 
 `Note`, under a card's `▸ Actions`, writes one line above its title: what you checked, or what you agreed to do and when. `Save` keeps the card in view. `Snooze until tomorrow` and `Snooze until next week` put it away until 9 a.m. tomorrow or next Monday, or sooner when it has news: a new commit on a review request, a new state or a new review on your PR, new activity on an issue. A toast tells you when a snoozed card is back, with its note. `Clear` removes the note.
 
@@ -284,7 +284,7 @@ One GraphQL search returns every PR waiting for your review with what the cards 
 
 - At most 100 PRs waiting for your review, in GitHub's best-match order. The other tabs read up to 100 of your open PRs, 100 assigned and 100 mentioning issues, and references from up to 500 recently touched items, each newest activity first. When a list has more than that, its count reads `100+`. Each list is read 25 at a time (references 100, as their items are small), each list shows as soon as it arrives, and a page GitHub times out on is asked again at half the size, so a busy account stays inside GitHub's time limit.
 - A saved search shows its 20 most recently updated matches; its count is GitHub's total for the search.
-- The Notifications tab reads up to 100 notifications from the last 30 days, and asks no more often than GitHub's poll interval allows.
+- The notifications on Browse are read up to 100 from the last 30 days, and GitHub is asked no more often than its poll interval allows.
 - A reference to an item you have not touched in 60 days is missed.
 - `New review` clears on any new commit to the PR, including one made by GitHub's "Update branch" button or by a bot.
 - After a force-push that rewrote the commit you reviewed, a re-requested PR shows no "since my last review" line.

@@ -1814,7 +1814,9 @@ export const register: Register = (on, options) => {
     const editingKey = await read($, editing)
     const everything = await read($, items)
     const state = await read($, status)
-    const active = await read($, tab)
+    const stored = await read($, tab)
+    // A tab kept from before the tabs were merged opens To review.
+    const active: Tab = stored === 'work' || stored === 'browse' ? stored : 'review'
     const allPrs = await read($, mine)
     const allIssues = await read($, issues)
     const live = liveSessions(await read($, sessions), now)
@@ -2313,19 +2315,19 @@ export const register: Register = (on, options) => {
     const direct = myIssues.filter(i => i.kind !== 'reference')
     const band = bandCounts(shownReviews.filter(i => !i.isDraft).length, shownPrs, shownIssues, bandSearchCount(groups, results))
     const isZero = state.kind === 'ready' && state.updatedAt !== undefined && Object.values(band).every(n => n === 0)
-    const tabCards: { repo: string }[] = active === 'review' ? shownReviews : active === 'mine' ? shownPrs : shownIssues
-    const reviewCount = atLeast(ready.length, cappedTabs.review)
-    const mineLabel = m.tabs.mine(atLeast(myPrs.length, cappedTabs.mine))
-    const issuesLabel = m.tabs.issues(atLeast(direct.length, cappedTabs.issues))
+    const tabCards: { repo: string }[] = active === 'review' ? shownReviews : [...shownPrs, ...shownIssues]
     const unreadCount = `${openThreads.filter(t => t.unread).length}`
-    // `short` is the name on a tab button, which shares a line with the others.
-    const tabs: { id: Tab; label: string; short: string }[] = [
-      { id: 'review', label: m.tabs.review(reviewCount), short: m.tabs.short.review(reviewCount) },
-      { id: 'mine', label: mineLabel, short: mineLabel },
-      { id: 'issues', label: issuesLabel, short: issuesLabel },
-      { id: 'searches', label: m.tabs.searches, short: m.tabs.searches },
-      { id: 'activity', label: m.tabs.activity(unreadCount), short: m.tabs.short.activity(unreadCount) },
+    const tabs: { id: Tab; label: string }[] = [
+      { id: 'review', label: m.tabs.review(atLeast(ready.length, cappedTabs.review)) },
+      { id: 'work', label: m.tabs.work(atLeast(myPrs.length + direct.length, cappedTabs.mine || cappedTabs.issues)) },
+      { id: 'browse', label: m.tabs.browse(unreadCount) },
     ]
+    // The name of a list inside My work or Browse.
+    const heading = (text: string) => (
+      <Box key={`heading-${text}`} marginBottom={1}>
+        <Text bold>{text}</Text>
+      </Box>
+    )
     const empty = (text: string) =>
       state.kind === 'loading' && everything.length + allPrs.length + allIssues.length === 0 ? (
         <Text dimColor>{m.status.firstFetch}</Text>
@@ -2352,12 +2354,12 @@ export const register: Register = (on, options) => {
         </Box>
       )
     }
-    // Show all brings back only this tab's hidden cards.
-    const unhide = (keys: string[]) =>
+    // Show all brings back only that list's hidden cards.
+    const unhide = (list: 'review' | 'pr' | 'issue', keys: string[]) =>
       keys.length > 0 && (
         <Box marginBottom={1}>
           <Button
-            key="unhide"
+            key={`unhide-${list}`}
             label={m.sections.hidden(keys.length)}
             dimColor
             onPress={async () => {
@@ -2542,7 +2544,7 @@ export const register: Register = (on, options) => {
                 <Text color="success">{m.empty.zero}</Text>
               </Box>
             )}
-            {isMixed && active !== 'searches' && active !== 'activity' && (
+            {isMixed && active !== 'browse' && (
               <Box flexDirection="row" flexWrap="wrap" columnGap={1} marginTop={1}>
                 {[
                   { id: 'here', isOn: narrow, label: m.sections.here(tabCards.filter(c => isHere(c.repo, here)).length) },
@@ -2557,41 +2559,17 @@ export const register: Register = (on, options) => {
                 ))}
               </Box>
             )}
-            {Select && e.surface !== 'terminal' ? (
-              // One line however narrow the drawer; the lists to act on come first.
-              <Box marginY={1}>
-                <Select
-                  key="tab"
-                  label={m.tabs.view}
-                  options={tabs.map(t => ({ value: t.id, label: t.label }))}
-                  value={active}
-                  onSelect={value => void update($, tab, () => value as Tab)}
+            {/* No hotkeys: number keys are already taken by other plugins' buttons. */}
+            <Box flexDirection="row" flexWrap="wrap" columnGap={1} marginY={1}>
+              {tabs.map(t => (
+                <Button
+                  key={`tab-${t.id}`}
+                  label={t.label}
+                  {...(t.id === active ? { variant: 'primary' as const } : { dimColor: true })}
+                  onPress={() => void update($, tab, () => t.id)}
                 />
-              </Box>
-            ) : (
-              // The terminal's menu takes no click, so there the tabs stay buttons pressed with 1 to 5:
-              // the lists to act on, then the ones to browse on a line of their own.
-              <Box flexDirection="column" marginY={1}>
-                {[
-                  { key: 'tabs-act', ids: ['review', 'mine', 'issues'] },
-                  { key: 'tabs-browse', ids: ['searches', 'activity'] },
-                ].map(row => (
-                  <Box key={row.key} flexDirection="row" flexWrap="wrap" columnGap={1}>
-                    {tabs.map((t, i) =>
-                      row.ids.includes(t.id) ? (
-                        <Button
-                          key={`tab-${t.id}`}
-                          label={t.short}
-                          hotkey={`${i + 1}`}
-                          {...(t.id === active ? { variant: 'primary' as const } : { dimColor: true })}
-                          onPress={() => void update($, tab, () => t.id)}
-                        />
-                      ) : null,
-                    )}
-                  </Box>
-                ))}
-              </Box>
-            )}
+              ))}
+            </Box>
 
             {active === 'review' && (
               <Box flexDirection="column">
@@ -2650,7 +2628,7 @@ export const register: Register = (on, options) => {
                 {section('review:auto', m.sections.autoDone(autoDone.length), autoDone, postedRow,
                   <Button key="auto-check-all" label={m.auto.checkAll} onPress={() => void checkAuto($, autoDone.map(p => p.at)).catch(() => undefined)} />,
                 )}
-                {unhide(everything.filter(away.review).map(itemKey))}
+                {unhide('review', everything.filter(away.review).map(itemKey))}
                 {list.length === 0 && empty(m.empty.review)}
                 {section('review:session', m.sections.session(reviewing.length), reviewing, card)}
                 {section('review:direct', m.sections.direct(directReady.length), directReady, card)}
@@ -2659,21 +2637,18 @@ export const register: Register = (on, options) => {
               </Box>
             )}
 
-            {active === 'mine' && (
+            {active === 'work' && (
               <Box flexDirection="column">
-                {unhide(allPrs.filter(away.pr).map(prHideKey))}
+                {heading(m.tabs.mine(atLeast(myPrs.length, cappedTabs.mine)))}
+                {unhide('pr', allPrs.filter(away.pr).map(prHideKey))}
                 {myPrs.length === 0 && empty(m.empty.mine)}
                 {section('mine:session', m.sections.session(working.length), working, prCard)}
                 {ORDER.map(s => {
                   const group = myPrs.filter(pr => pr.state === s && !working.includes(pr))
                   return section(`mine:${s}`, `${m.state[s]} ${group.length}`, group, prCard)
                 })}
-              </Box>
-            )}
-
-            {active === 'issues' && (
-              <Box flexDirection="column">
-                {unhide(allIssues.filter(away.issue).map(issueHideKey))}
+                {heading(m.tabs.issues(atLeast(direct.length, cappedTabs.issues)))}
+                {unhide('issue', allIssues.filter(away.issue).map(issueHideKey))}
                 {myIssues.length === 0 && empty(m.empty.issues)}
                 {(['assigned', 'mention', 'reference'] as const).map(kind => {
                   const group = myIssues.filter(i => i.kind === kind)
@@ -2683,16 +2658,13 @@ export const register: Register = (on, options) => {
               </Box>
             )}
 
-            {active === 'searches' && (
+            {active === 'browse' && (
               <Box flexDirection="column">
+                {heading(m.tabs.searches)}
                 {groups.length === 0 && empty(m.empty.searches)}
                 {groups.map(groupSection)}
                 {extraGroups > 0 && <Text color="warning">{m.searches.tooMany(extraGroups)}</Text>}
-              </Box>
-            )}
-
-            {active === 'activity' && (
-              <Box flexDirection="column">
+                {heading(m.tabs.activity(unreadCount))}
                 {notified.noAccess && <Text color="warning">{m.activity.noAccess}</Text>}
                 {notified.error !== undefined && <Text color="warning">{m.status.error(notified.error)}</Text>}
                 {!notified.noAccess && threads.length === 0 && empty(m.empty.activity)}

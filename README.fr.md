@@ -21,7 +21,7 @@ Avec [GitHub CLI](https://cli.github.com/) connecté (`gh auth login`), dans le 
 La dernière ligne ouvre la boîte de réception. Les options et les mises à jour sont dans [Installation](#installation).
 
 - **Bandeau au-dessus du prompt** — une seule ligne qui ne compte que ce qui vous attend : les PR en attente de votre revue et vos PR à traiter. Les issues qui vous sont assignées ou qui vous mentionnent restent dans la boîte de réception, pour que la ligne reste courte. Sa couleur indique depuis combien de temps attend la plus ancienne demande de revue (jaune à partir de 3 jours, rouge à partir de 14). `Ouvrir` ouvre la boîte de réception. Quand un nombre baisse, il passe au vert un instant. Avec la revue automatique activée, `revues automatiques N` suit les nombres tant que des revues publiées pour vous attendent dans la boîte de réception. Tant qu'une revue automatique attend ou tourne, une deuxième ligne indique sa PR et où elle en est, avec les mêmes mots que sa carte, et combien d'autres attendent ; un indicateur tourne pendant la revue.
-- **Boîte de réception des revues** — `/review-inbox`, avec cinq onglets : Revues à faire, Mes PR et Assignations et mentions sont à traiter, Recherches enregistrées et Notifications sont à parcourir. Dans l'application de bureau, choisissez l'onglet dans le menu Afficher, en haut. Dans le terminal, les onglets sont des boutons sur deux lignes, ce qui est à traiter en premier ; appuyez sur 1 à 5 quand la boîte de réception a le focus pour aller à l'onglet de ce rang, en partant de la gauche. Le nombre d'un onglet compte ses cartes ; Recherches enregistrées n'en a pas, et Notifications ne compte que les non lues.
+- **Boîte de réception des revues** — `/review-inbox`, avec trois onglets : Revues à faire ; Mon travail, avec vos PR et les issues qui vous sont assignées ou vous mentionnent ; et Parcourir, avec vos recherches enregistrées et vos notifications GitHub. Le nombre de Revues à faire et de Mon travail compte leurs cartes ; celui de Parcourir, les notifications non lues.
 - **Messages éphémères** — un court message quand quelque chose de nouveau arrive pendant que vous travaillez.
 
 L'interface et les résumés existent en neuf langues ; voir [Langue](#langue).
@@ -101,7 +101,7 @@ my-org/legacy=~/old/legacy-app
 
 ## Onglets
 
-Chaque onglet regroupe ses cartes par catégorie. Appuyez sur l'en-tête d'une catégorie pour la replier, et de nouveau pour la déplier. `N masquées · tout afficher`, en haut de l'onglet, ne réaffiche que les cartes masquées de cet onglet.
+Chaque onglet regroupe ses cartes par catégorie. Appuyez sur l'en-tête d'une catégorie pour la replier, et de nouveau pour la déplier. `N masquées · tout afficher`, en haut d'une liste, ne réaffiche que les cartes masquées de cette liste.
 
 `Note`, sous `▸ Actions` d'une carte, écrit une ligne au-dessus de son titre : ce que vous avez vérifié, ou ce que vous avez prévu de faire et quand. `Enregistrer` laisse la carte visible. `Reporter à demain` et `Reporter à la semaine prochaine` la mettent de côté jusqu'à demain ou lundi prochain, 9 h, ou plus tôt s'il y a du nouveau : un nouveau commit sur une demande de revue, un nouvel état ou une nouvelle revue sur votre PR, une nouvelle activité sur une issue. Une notification signale le retour d'une carte reportée, avec sa note. `Effacer` supprime la note.
 
@@ -284,7 +284,7 @@ Une seule recherche GraphQL renvoie toutes les PR en attente de votre revue avec
 
 - Au plus 100 PR en attente de votre revue, dans l'ordre de pertinence (best match) de GitHub. Les autres onglets lisent jusqu'à 100 de vos PR ouvertes, 100 issues assignées et 100 issues qui vous mentionnent, ainsi que les références provenant de 500 éléments récemment actifs au maximum, chaque fois en commençant par l'activité la plus récente. Quand une liste en contient davantage, son nombre s'affiche `100+`. Chaque liste est lue par 25 (les références, plus légères, par 100) et s'affiche dès qu'elle arrive, et une page sur laquelle GitHub dépasse son délai est redemandée avec une taille moitié moindre ; un compte avec beaucoup de PR reste ainsi dans la limite de temps de GitHub.
 - Une recherche enregistrée montre ses 20 résultats les plus récemment mis à jour ; son nombre est le total que GitHub donne pour la recherche.
-- L'onglet Notifications lit jusqu'à 100 notifications des 30 derniers jours et n'interroge pas plus souvent que l'intervalle fixé par GitHub.
+- Les notifications de Parcourir sont lues jusqu'à 100, sur les 30 derniers jours, sans interroger plus souvent que l'intervalle fixé par GitHub.
 - Une référence à un élément auquel vous n'avez pas touché depuis 60 jours passe inaperçue.
 - `Nouvelle revue` disparaît à chaque nouveau commit sur la PR, y compris un commit créé par le bouton « Update branch » de GitHub ou par un bot.
 - Après un force-push qui a réécrit le commit dont vous aviez fait la revue, une PR dont la revue est redemandée n'affiche pas de ligne « Depuis ma dernière revue ».

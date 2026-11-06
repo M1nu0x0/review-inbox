@@ -28,6 +28,9 @@ const pr = (number: number, state: MyPr['state'], body?: string): MyPr =>
 const issue = (number: number, kind: IssueItem['kind']): IssueItem =>
   ({ kind, repo: 'o/i', number, title: `i${number}`, url: `i${number}`, at: '2026-10-01T00:00:00Z' })
 
+// The tab each list is on.
+const TAB_OF: Record<string, string> = { mine: 'work', issues: 'work', searches: 'browse', activity: 'browse' }
+
 // The last opened session's files, as it wrote them, and its clock.
 let files = new Map<string, string>()
 let clock: ReturnType<typeof mock.clock>
@@ -84,7 +87,7 @@ async function opened(
   await $.session.start({ cwd: '/work', surface: null, isInteractive: false })
   for (let i = 0; i < 6; i++) await clock.advance(1_000)
   const ui = await $.ui.mount({ ...PANE, surface: more.surface ?? 'terminal' })
-  await (more.surface === 'desktop' ? ui.select({ key: 'tab', value: tab }) : ui.press({ key: `tab-${tab}` }))
+  await ui.press({ key: `tab-${TAB_OF[tab] ?? tab}` })
   files = store
   return ui
 }
@@ -126,7 +129,7 @@ test('a hidden PR of mine leaves its tab, and show all brings it back', async ($
   await ui.press({ key: 'more-pr:u1' })
   await ui.press({ key: 'hide-u1' })
   expect(await shown(ui, /#1/)).toBe(false)
-  await ui.press({ key: 'unhide' })
+  await ui.press({ key: 'unhide-pr' })
   expect(await shown(ui, /#1/)).toBe(true)
   await ui.unmount()
 })
@@ -241,7 +244,6 @@ test('a stuck PR or an assigned issue has a button naming its next step and the 
   await ui.press({ key: 'task-u1' })
   expect(await label('task-u1')).toBe('Added')
 
-  await ui.press({ key: 'tab-issues' })
   expect(await label('task-i3')).toBe('Work on this')
   expect(await shown(ui, /no local clone/)).toBe(true)
   expect(await ui.find({ key: 'task-i4' })).toBe(undefined)
@@ -303,37 +305,31 @@ test('the scope buttons stay away when every card is from this session\'s reposi
   await ui.unmount()
 })
 
-test('on the desktop the tabs are one View menu, the lists to act on first, so a narrow drawer spends one line on them', async ($, on) => {
-  const ui = await opened($, on, [pr(1, 'changes')], [], 'mine', { surface: 'desktop' })
-  expect((await ui.find({ key: 'tab' }))?.props).toMatchObject({
-    label: 'View',
-    value: 'mine',
-    options: [
-      { value: 'review', label: 'To review 0' },
-      { value: 'mine', label: 'My PRs 1' },
-      { value: 'issues', label: 'Assigned & mentioned 0' },
-      { value: 'searches', label: 'Saved searches' },
-      { value: 'activity', label: 'Notifications 0' },
-    ],
+for (const surface of ['terminal', 'desktop'] as const)
+  test(`the ${surface} drawer has three tab buttons on one line and no number keys: to review, my work, and the lists to browse`, async ($, on) => {
+    const ui = await opened($, on, [pr(1, 'changes')], [issue(2, 'assigned')], 'review', { surface })
+    const tab = async (key: string) => (await ui.find({ key }))?.props
+    expect(await tab('tab-review')).toMatchObject({ label: 'To review 0' })
+    expect(await tab('tab-work')).toMatchObject({ label: 'My work 2' })
+    expect(await tab('tab-browse')).toMatchObject({ label: 'Browse 0' })
+    for (const key of ['tab-review', 'tab-work', 'tab-browse']) expect((await tab(key))?.hotkey).toBeUndefined()
+    expect(await ui.find({ key: 'tab' })).toBeUndefined()
+    await ui.unmount()
   })
-  expect(await ui.find({ key: 'tab-review' })).toBeUndefined()
-  expect(await shown(ui, /#1/)).toBe(true)
 
-  await ui.select({ key: 'tab', value: 'issues' })
-  expect((await ui.find({ key: 'tab' }))?.props.value).toBe('issues')
-  expect(await shown(ui, /#1/)).toBe(false)
+test('My work holds my PRs, then the issues assigned to me or mentioning me, each under its name', async ($, on) => {
+  const ui = await opened($, on, [pr(1, 'changes')], [issue(2, 'assigned')], 'mine')
+  expect(await shown(ui, /^My PRs 1$/)).toBe(true)
+  expect(await shown(ui, /#1/)).toBe(true)
+  expect(await shown(ui, /^Assigned & mentioned 1$/)).toBe(true)
+  expect(await shown(ui, /#2/)).toBe(true)
   await ui.unmount()
 })
 
-test('in the terminal, whose menu takes no click, the tabs are buttons pressed with 1 to 5: the lists to act on, then the ones to browse on their own line', async ($, on) => {
-  const ui = await opened($, on, [], [], 'mine')
-  const tab = async (key: string) => (await ui.find({ key }))?.props
-  expect(await ui.find({ key: 'tab' })).toBeUndefined()
-  expect(await tab('tab-review')).toMatchObject({ hotkey: '1', label: 'Review 0' })
-  expect(await tab('tab-issues')).toMatchObject({ hotkey: '3', label: 'Assigned & mentioned 0' })
-  expect(await tab('tab-activity')).toMatchObject({ hotkey: '5', label: 'Notifications 0' })
-  expect(await ui.find({ key: 'tabs-act' })).toBeDefined()
-  expect(await ui.find({ key: 'tabs-browse' })).toBeDefined()
+test('Browse holds the saved searches, then the notifications, each under its name', async ($, on) => {
+  const ui = await opened($, on, [], [], 'searches')
+  expect(await shown(ui, /^Saved searches$/)).toBe(true)
+  expect(await shown(ui, /^Notifications 0$/)).toBe(true)
   await ui.unmount()
 })
 
@@ -482,7 +478,7 @@ test('the Saved searches tab shows each search with its newest results, a failed
   }
   const ui = await opened($, on, [], [], 'searches', { files: { [ACTIONS]: JSON.stringify(own) }, groups })
 
-  expect(await label('tab-searches')).toBe('Saved searches')
+  expect(await shown(ui, /^Saved searches$/)).toBe(true)
   expect(await shown(ui, /acme\/app #7/)).toBe(true)
   expect(await shown(ui, /kim · today/)).toBe(true)
   expect(await shown(ui, /24 more on GitHub/)).toBe(true)
@@ -557,7 +553,7 @@ test('the Notifications tab lists the notifications no other tab covers by reaso
     },
   })
 
-  expect(await label('tab-activity')).toBe('Notifications 1')
+  expect(await label('tab-browse')).toBe('Browse 1')
   expect(await shown(ui, /● o\/n/)).toBe(true)
   expect(await label('fold-activity:comment')).toBe('▾ Comment 1')
   expect(await label('fold-activity:state_change')).toBe('▾ State changed 1')
@@ -576,7 +572,7 @@ test('the Notifications tab lists the notifications no other tab covers by reaso
   await clock.advance(10_000)
   expect(sent).toEqual(['notifications/threads/1'])
   expect(await ui.find({ key: 'done-1' })).toBeUndefined()
-  expect(await label('tab-activity')).toBe('Notifications 0')
+  expect(await label('tab-browse')).toBe('Browse 0')
 
   await ui.press({ key: 'unsubscribe-2' })
   await clock.advance(10_000)

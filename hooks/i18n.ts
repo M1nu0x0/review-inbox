@@ -30,17 +30,13 @@ const en = {
     autoWaiting: (n: number) => ` · ${n} more waiting`,
   },
   tabs: {
-    view: 'View',
     review: (n: string) => `To review ${n}`,
+    work: (n: string) => `My work ${n}`,
+    browse: (n: string) => `Browse ${n}`,
     mine: (n: string) => `My PRs ${n}`,
     issues: (n: string) => `Assigned & mentioned ${n}`,
     searches: 'Saved searches',
     activity: (n: string) => `Notifications ${n}`,
-    // On the terminal's tab buttons, which share a line.
-    short: {
-      review: (n: string) => `Review ${n}`,
-      activity: (n: string) => `Notifications ${n}`,
-    },
   },
   card: {
     rerequest: 're-requested',

@@ -18,16 +18,13 @@ export const zhTW: Messages = {
     autoWaiting: (n: number) => ` · 等待中 ${n}`,
   },
   tabs: {
-    view: '檢視',
     review: n => `待審查 ${n}`,
+    work: n => `我的工作 ${n}`,
+    browse: n => `瀏覽 ${n}`,
     mine: n => `我的 PR ${n}`,
     issues: n => `指派與提及 ${n}`,
     searches: '已儲存的搜尋',
     activity: n => `GitHub 通知 ${n}`,
-    short: {
-      review: n => `審查 ${n}`,
-      activity: n => `通知 ${n}`,
-    },
   },
   card: {
     rerequest: '已重新請求',

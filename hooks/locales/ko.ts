@@ -18,16 +18,13 @@ export const ko: Messages = {
     autoWaiting: (n: number) => ` · 대기 ${n}`,
   },
   tabs: {
-    view: '보기',
     review: n => `리뷰 대기 ${n}`,
+    work: n => `내 작업 ${n}`,
+    browse: n => `둘러보기 ${n}`,
     mine: n => `내 PR ${n}`,
     issues: n => `할당·언급 ${n}`,
     searches: '저장한 검색',
     activity: n => `GitHub 알림 ${n}`,
-    short: {
-      review: n => `리뷰 ${n}`,
-      activity: n => `알림 ${n}`,
-    },
   },
   card: {
     rerequest: '재요청',

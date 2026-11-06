@@ -21,16 +21,13 @@ export const ptBR: Messages = {
     autoWaiting: (n: number) => ` · ${n} na fila`,
   },
   tabs: {
-    view: 'Ver',
     review: (n: string) => `Para revisar ${n}`,
+    work: (n: string) => `Meu trabalho ${n}`,
+    browse: (n: string) => `Explorar ${n}`,
     mine: (n: string) => `Meus PRs ${n}`,
     issues: (n: string) => `Atribuições e menções ${n}`,
     searches: 'Buscas salvas',
     activity: (n: string) => `Notificações ${n}`,
-    short: {
-      review: (n: string) => `Revisar ${n}`,
-      activity: (n: string) => `Notificações ${n}`,
-    },
   },
   card: {
     rerequest: 'revisão solicitada novamente',
