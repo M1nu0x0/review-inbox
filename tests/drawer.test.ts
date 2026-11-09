@@ -317,6 +317,16 @@ for (const surface of ['terminal', 'desktop'] as const)
     await ui.unmount()
   })
 
+for (const surface of ['terminal', 'desktop'] as const)
+  test(`on the ${surface} a tab button switches the drawer to its tab`, async ($, on) => {
+    const ui = await opened($, on, [pr(1, 'changes')], [issue(2, 'assigned')], 'review', { surface })
+
+    await ui.press({ key: 'tab-work' })
+
+    expect(await shown(ui, /^My PRs 1$/)).toBe(true)
+    await ui.unmount()
+  })
+
 test('My work holds my PRs, then the issues assigned to me or mentioning me, each under its name', async ($, on) => {
   const ui = await opened($, on, [pr(1, 'changes')], [issue(2, 'assigned')], 'mine')
   expect(await shown(ui, /^My PRs 1$/)).toBe(true)
