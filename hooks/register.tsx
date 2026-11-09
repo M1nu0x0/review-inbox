@@ -195,6 +195,7 @@ const issues = atom({ plugin: 'review-inbox', key: 'issues' } as const, [] as Is
 const capped = atom({ plugin: 'review-inbox', key: 'capped' } as const, {} as Capped)
 const tab = atom({ plugin: 'review-inbox', key: 'tab' } as const, 'review' as Tab)
 const collapsed = atom({ plugin: 'review-inbox', key: 'collapsed' } as const, [] as string[])
+const pages = atom({ plugin: 'review-inbox', key: 'pages' } as const, {} as Record<string, number>)
 const notes = atom({ plugin: 'review-inbox', key: 'notes' } as const, {} as Record<string, Note>)
 const query = atom({ plugin: 'review-inbox', key: 'query' } as const, '')
 const editing = atom({ plugin: 'review-inbox', key: 'editing' } as const, '')
@@ -601,6 +602,19 @@ async function fetchActivity($: EngineInterface, env: Record<string, string>, pr
 }
 
 const without = <T,>(record: Record<string, T>, key: string) => Object.fromEntries(Object.entries(record).filter(([k]) => k !== key))
+
+// The desktop app draws nothing for a tree of 2,000 nodes or more, leaving the pane blank and its presses unhandled; the cards get this many, the rest of the drawer the remainder.
+const CARD_NODES = 1_500
+
+// Nodes as the desktop app counts them: each element and each string.
+const nodesOf = (node: unknown): number =>
+  typeof node === 'string' || typeof node === 'number'
+    ? 1
+    : Array.isArray(node)
+      ? node.reduce((n: number, child) => n + nodesOf(child), 0)
+      : node !== null && typeof node === 'object' && 'type' in node
+        ? 1 + nodesOf((node as { children?: unknown }).children)
+        : 0
 
 // Done or Unsubscribe pressed: the row waits out its Undo, then this sends it.
 async function settleLater($: EngineInterface, thread: Thread, kind: Settling['kind']) {
@@ -1838,6 +1852,19 @@ export const register: Register = (on, options) => {
     const myIssues = scoped(shownIssues)
     const cappedTabs = await read($, capped)
     const shut = await read($, collapsed)
+    const pageStarts = await read($, pages)
+    let nodesLeft = e.surface === 'terminal' ? Infinity : CARD_NODES
+    // The cards that fit what is left, in order; the first that does not ends the run.
+    const fit = (cards: RenderChildren[]) => {
+      const shown: RenderChildren[] = []
+      for (const card of cards) {
+        const n = nodesOf(card)
+        if (n > nodesLeft) break
+        nodesLeft -= n
+        shown.push(card)
+      }
+      return shown
+    }
     const addedKeys = [...(await read($, added)), ...(await read($, requested))]
     const where = (pr: { repo: string; url: string; branch?: string }) =>
       workingOn(live, pr).map(id => (id === selfId ? m.session.here : live[id]!.folder))
@@ -2339,6 +2366,10 @@ export const register: Register = (on, options) => {
     const section = <T,>(id: string, label: string, list: T[], render: (item: T) => RenderChildren, action?: RenderChildren) => {
       if (list.length === 0) return undefined
       const isShut = shut.includes(id)
+      // A list that shrank past where Next left it starts over.
+      const from = (pageStarts[id] ?? 0) < list.length ? (pageStarts[id] ?? 0) : 0
+      const shown = isShut ? [] : fit(list.slice(from).map(render))
+      const to = from + shown.length
       return (
         <Box key={`section-${id}`} flexDirection="column">
           <Box marginBottom={1} flexDirection="row" justifyContent="space-between">
@@ -2350,10 +2381,21 @@ export const register: Register = (on, options) => {
             />
             {action}
           </Box>
-          {!isShut && list.map(render)}
+          {shown}
+          {!isShut && (from > 0 || to < list.length) && pager(id, from, to, list.length)}
         </Box>
       )
     }
+    // Under a section whose cards did not all fit: which ones show, and the way to the others.
+    const pager = (id: string, from: number, to: number, total: number) => (
+      <Box key={`pager-${id}`} marginBottom={1} flexDirection="row" flexWrap="wrap" columnGap={1}>
+        <Text dimColor>{to > from ? m.sections.range(from + 1, to, total) : m.sections.foldAbove(total - from)}</Text>
+        {to > from && to < total && (
+          <Button key={`page-next-${id}`} label={m.sections.next} dimColor onPress={() => void update($, pages, p => ({ ...p, [id]: to }))} />
+        )}
+        {from > 0 && <Button key={`page-first-${id}`} label={m.sections.first} dimColor onPress={() => void update($, pages, p => without(p, id))} />}
+      </Box>
+    )
     // Show all brings back only that list's hidden cards.
     const unhide = (list: 'review' | 'pr' | 'issue', keys: string[]) =>
       keys.length > 0 && (
@@ -2440,6 +2482,7 @@ export const register: Register = (on, options) => {
       const id = `searches:${group.id}`
       const isShut = shut.includes(id)
       const result = resultOf(group, results)
+      const hits = !isShut && result?.error === undefined ? fit((result?.hits ?? []).map(hit => hitRow(group.id, hit))) : []
       const note = (text: string, color?: 'warning') => (
         <Box marginBottom={1}>
           <Text dimColor={!color} color={color}>
@@ -2464,7 +2507,8 @@ export const register: Register = (on, options) => {
                 ? note(m.searches.failed(result.error), 'warning')
                 : result.hits.length === 0
                   ? note(m.searches.none)
-                  : result.hits.map(hit => hitRow(group.id, hit)))}
+                  : hits)}
+          {!isShut && result && result.error === undefined && hits.length < result.hits.length && note(m.sections.foldAbove(result.hits.length - hits.length))}
           {!isShut && result && result.count > result.hits.length && (
             <Box marginBottom={1}>
               <Text>
